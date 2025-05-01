@@ -105,8 +105,11 @@ def add_to_cart(user_id, pr_id, pr_name, pr_price, pr_quantity):
     connection = sqlite3.connect("kfc.db")
     sql = connection.cursor()
     total_price = pr_price * pr_quantity
+    change_pr_quantity()
     sql.execute("INSERT INTO cart (user_id, pr_id, pr_name, pr_count, "
                 "total_price) VALUES (?, ? ,? ,?, ?);", (user_id, pr_id,
                                                          pr_name, pr_quantity,
                                                          total_price))
     connection.commit()
+
+#4- очищение корзины клиента и уменьшение количества продуктов в базе данных
