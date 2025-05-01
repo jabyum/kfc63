@@ -96,6 +96,7 @@ def change_pr_quantity(pr_id, quantity):
     new_quantity = actual_quantity[0] - quantity
     if new_quantity >= 0:
         sql.execute("UPDATE products SET pr_quantity=? WHERE pr_id=?;", (new_quantity, pr_id))
+        connection.commit()
         return True
     return False
 
