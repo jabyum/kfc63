@@ -48,3 +48,64 @@ def add_product(pr_name, pr_price, pr_desc, pr_quantity, pr_photo):
                 "pr_photo, reg_date) VALUES (?, ?, ?, ?, ?, ?);",
                 (pr_name, pr_price, pr_desc, pr_quantity, pr_photo, datetime.now()))
     connection.commit()
+# получение всех продуктов
+def get_all_products():
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    all_product = sql.execute("SELECT * FROM products;").fetchall()
+    return all_product
+# удаление определенного продукта
+def delete_exact_product(pr_id):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM products WHERE pr_id=?;", (pr_id, ))
+    connection.commit()
+# получение информации об определенном продукте
+def get_exact_product(pr_id):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    exact_product = sql.execute("SELECT pr_name, pr_price, pr_desc, pr_photo "
+                                "FROM products WHERE pr_id=?;", (pr_id, )).fetchone()
+    return exact_product
+# функция для генерации меню с продуктами
+def get_products_id_name():
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    # вытаскиваем всю информацию о продуктах с которой будет работать
+    all_product = sql.execute("SELECT pr_id, pr_name, pr_quantity "
+                              "FROM products;").fetchall()
+    # фильтруем полученную информацию и оставляем название и айди тех продуктов,
+    # количество которых больше 0
+    # в каком виде будет выглядеть all_products:
+    # [(pr_id, pr_name, pr_quantity), (pr_id, pr_name, pr_quantity), ....]
+    actual_products = [[product[0], product[1]] for product in all_product if product[2] > 0]
+    # [[pr_id, pr_name], [pr_id, pr_name], ...]
+    return actual_products
+
+# дз 1- создать функцию для получения id всех юзеров (get_user_id)
+def get_all_id():
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    all_id = sql.execute("SELECT user_id FROM users;").fetchall()
+    return all_id
+# 2 - функция для изменения количества продукта (change_pr_quantity)
+def change_pr_quantity(pr_id, quantity):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    actual_quantity = sql.execute("SELECT pr_quantity FROM products WHERE pr_id=?;", (pr_id, )).fetchone()
+    new_quantity = actual_quantity[0] - quantity
+    if new_quantity >= 0:
+        sql.execute("UPDATE products SET pr_quantity=? WHERE pr_id=?;", (new_quantity, pr_id))
+        return True
+    return False
+
+# 3- функция добавления информации о корзине (add_to_cart)
+def add_to_cart(user_id, pr_id, pr_name, pr_price, pr_quantity):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    total_price = pr_price * pr_quantity
+    sql.execute("INSERT INTO cart (user_id, pr_id, pr_name, pr_count, "
+                "total_price) VALUES (?, ? ,? ,?, ?);", (user_id, pr_id,
+                                                         pr_name, pr_quantity,
+                                                         total_price))
+    connection.commit()
