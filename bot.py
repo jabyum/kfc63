@@ -10,7 +10,7 @@ def start(message):
     user_id = message.from_user.id
     checker = db.check_user(user_id)
     if checker == True:
-        bot.send_message(user_id, "Главное меню:")
+        bot.send_message(user_id, "Главное меню:", reply_markup=main_menu_bt())
     elif checker == False:
         bot.send_message(user_id, "Добро пожаловать в бот доставки!\n"
                                   "Пожалуйста, введите свое имя")
@@ -51,6 +51,18 @@ def get_location(message):
                          reply_markup=location_bt())
         bot.register_next_step_handler(message, get_location)
 
-
+@bot.message_handler(content_types=["text"])
+# обработчик обычных кнопок
+def text_func(message):
+    user_id = message.from_user.id
+    text = message.text
+    if text == "🍴Меню":
+        bot.send_message(user_id, "Выберите продукт: ")
+    elif text == "🛒Корзина":
+        bot.send_message(user_id, "Ваша корзина: ")
+    elif text == "✍Оставить отзыв":
+        bot.send_message(user_id, "Напишите ваш отзыв: ")
+    elif text == "⚙️Настройки":
+        bot.send_message(user_id, "Что хотите изменить?")
 
 bot.infinity_polling()
