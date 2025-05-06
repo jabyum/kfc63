@@ -48,3 +48,16 @@ def plus_minus_in(plus_or_minus="", current_amount=1):
     kb.row(to_cart)
     kb.row(back)
     return kb
+
+def cart_in():
+    kb = types.InlineKeyboardMarkup(row_width=1)
+    clear = types.InlineKeyboardButton(text="Очистить корзину", callback_data="clear_cart")
+    order = types.InlineKeyboardButton(text="Оформить заказ", callback_data="order")
+    back = types.InlineKeyboardButton(text="Назад", callback_data="back_product")
+    kb.add(clear,order,back)
+    return kb
+def user_info_in(user_id):
+    kb = types.InlineKeyboardMarkup(row_width=1)
+    button = types.InlineKeyboardButton(text="Информация о юзере", callback_data=f"info_{user_id}")
+    kb.add(button)
+    return kb

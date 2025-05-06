@@ -38,7 +38,11 @@ def get_all_users():
     sql = connection.cursor()
     all_users = sql.execute("SELECT * FROM users;").fetchall()
     return all_users
-
+def get_user_info(user_id):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    user = sql.execute("SELECT name, phone_number FROM users WHERE user_id=?;", (user_id, )).fetchone()
+    return user
 # функции для работы с продуктами
 # добавление продукта
 def add_product(pr_name, pr_price, pr_desc, pr_quantity, pr_photo):

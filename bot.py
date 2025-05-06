@@ -58,7 +58,8 @@ def get_location(message):
         bot.register_next_step_handler(message, get_location)
 @bot.callback_query_handler(lambda call: call.data in ["back", "cart",
                                                        "plus", "minus", "to_cart",
-                                                       "back_product", "cart"])
+                                                       "back_product", "cart",
+                                                       "order", "clear_cart"])
 def calls(call):
     user_id = call.message.chat.id
     if call.data == "back":
@@ -91,8 +92,8 @@ def calls(call):
         bot.send_message(user_id, "Выберите продукт: ",
                          reply_markup=all_products_in(all_products))
     elif call.data == "cart":
+        bot.delete_message(user_id, call.message.message_id)
         cart = db.get_user_cart(user_id)
-        print(cart)
         full_text = "Ваша корзина:\n"
         count = 0
         total_price = 0
@@ -101,11 +102,36 @@ def calls(call):
             full_text += f"{count}. {product[0]} x {product[1]} = {product[2]} сум\n"
             total_price += product[2]
         full_text += f"\nИтоговая сумма: {total_price} сум"
-        bot.send_message(user_id, full_text)
+        bot.send_message(user_id, full_text, reply_markup=cart_in())
+    elif call.data == "clear_cart":
+        db.delete_user_cart(user_id)
+        bot.delete_message(user_id, call.message.message_id)
+        all_products = db.get_products_id_name()
+        bot.send_message(user_id, "Корзина очищена. Хотите что-нибудь заказать?: ",
+                         reply_markup=all_products_in(all_products))
+    elif call.data == "order":
+        bot.delete_message(user_id, call.message.message_id)
+        cart = db.get_user_cart(user_id)
+        full_text = f"Новый заказ от юзера {user_id}:\n"
+        count = 0
+        total_price = 0
+        for product in cart:
+            count += 1
+            full_text += f"{count}. {product[0]} x {product[1]} = {product[2]} сум\n"
+            total_price += product[2]
+        full_text += f"\nИтоговая сумма: {total_price} сум"
+        bot.send_message(-4789605501, full_text, reply_markup=user_info_in(user_id))
+        db.delete_user_cart(user_id)
+        bot.send_message(user_id, "Ваш заказ принят. Ожидайте подтверждения",
+                         reply_markup=main_menu_bt())
 
-
-
-
+@bot.callback_query_handler(lambda call: "info_" in call.data)
+def get_prod_info(call):
+    user_id = call.message.chat.id
+    info_id = int(call.data.replace("info_", ""))
+    info = db.get_user_info(info_id)
+    bot.answer_callback_query(call.id, text=f"Имя пользователя: {info[0]}\n"
+                                            f"Номер пользователя: {info[1]}")
 
 
 
