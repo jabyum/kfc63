@@ -54,6 +54,7 @@ def cart_in():
     clear = types.InlineKeyboardButton(text="Очистить корзину", callback_data="clear_cart")
     order = types.InlineKeyboardButton(text="Оформить заказ", callback_data="order")
     back = types.InlineKeyboardButton(text="Назад", callback_data="back_product")
+    # динамичные кнопки для удаления определенного продукта
     kb.add(clear,order,back)
     return kb
 def user_info_in(user_id):

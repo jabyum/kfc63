@@ -8,7 +8,6 @@ bot = TeleBot("7671651212:AAFLNOKURS6o7mQBNrvbt49Jgmqo82MaIqo")
 # db.add_product("Хот-дог", 20000.0, "сосиска в булочке", 0, "https://d2j6dbq0eux0bg.cloudfront.net/images/14450072/1156014693.jpg")
 # временная корзина {user_id:{pr_id, pr_name, pr_count, pr_price}}
 users = {}
-
 # объект работающий с локацией
 geolocator = Photon(user_agent="geo-locator", timeout=10)
 @bot.message_handler(commands=["start"])
@@ -126,15 +125,19 @@ def calls(call):
                          reply_markup=main_menu_bt())
 
 @bot.callback_query_handler(lambda call: "info_" in call.data)
-def get_prod_info(call):
+def get_user_info(call):
     user_id = call.message.chat.id
     info_id = int(call.data.replace("info_", ""))
     info = db.get_user_info(info_id)
     bot.answer_callback_query(call.id, text=f"Имя пользователя: {info[0]}\n"
                                             f"Номер пользователя: {info[1]}")
 
-
-
+# функция для удаления одного продукта из корзины
+@bot.callback_query_handler(lambda call: "delete_" in call.data)
+def delete_prod_from_cart(call):
+    bot.edit_message_text()
+    # удаление + сенд_месседж
+    ...
 
 @bot.callback_query_handler(lambda call: "prod_" in call.data)
 def get_prod_info(call):
