@@ -83,22 +83,27 @@ def get_products_id_name():
     return actual_products
 # функции для кнопок в корзине (для удаления продукта)
 def get_cart_id_name(user_id):
-    connection = sqlite3.connect("data.db")
+    connection = sqlite3.connect("kfc.db")
     sql = connection.cursor()
     product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;", (user_id, )).fetchall()
     return product
 def delete_exact_product_from_cart(user_id, pr_id):
-    connection = sqlite3.connect("data.db")
+    connection = sqlite3.connect("kfc.db")
     sql = connection.cursor()
     sql.execute("DELETE FROM cart WHERE user_id=? and pr_id=?;", (user_id, pr_id))
     connection.commit()
 # очистка корзины юзера
 def delete_user_cart(user_id):
-    connection = sqlite3.connect("data.db")
+    connection = sqlite3.connect("kfc.db")
     sql = connection.cursor()
     sql.execute("DELETE FROM cart WHERE user_id=?;", (user_id, ))
     connection.commit()
-
+# получение корзины пользователя
+def get_user_cart(user_id):
+    connection = sqlite3.connect("kfc.db")
+    sql = connection.cursor()
+    cart = sql.execute("SELECT pr_name, pr_count, total_price FROM cart WHERE user_id=?;", (user_id, )).fetchall()
+    return cart
 # дз 1- создать функцию для получения id всех юзеров (get_user_id)
 def get_all_id():
     connection = sqlite3.connect("kfc.db")
@@ -122,7 +127,6 @@ def add_to_cart(user_id, pr_id, pr_name, pr_price, pr_quantity):
     connection = sqlite3.connect("kfc.db")
     sql = connection.cursor()
     total_price = pr_price * pr_quantity
-    change_pr_quantity()
     sql.execute("INSERT INTO cart (user_id, pr_id, pr_name, pr_count, "
                 "total_price) VALUES (?, ? ,? ,?, ?);", (user_id, pr_id,
                                                          pr_name, pr_quantity,
