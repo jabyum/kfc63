@@ -81,6 +81,23 @@ def get_products_id_name():
     actual_products = [[product[0], product[1]] for product in all_product if product[2] > 0]
     # [[pr_id, pr_name], [pr_id, pr_name], ...]
     return actual_products
+# функции для кнопок в корзине (для удаления продукта)
+def get_cart_id_name(user_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;", (user_id, )).fetchall()
+    return product
+def delete_exact_product_from_cart(user_id, pr_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=? and pr_id=?;", (user_id, pr_id))
+    connection.commit()
+# очистка корзины юзера
+def delete_user_cart(user_id):
+    connection = sqlite3.connect("data.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=?;", (user_id, ))
+    connection.commit()
 
 # дз 1- создать функцию для получения id всех юзеров (get_user_id)
 def get_all_id():
