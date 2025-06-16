@@ -2,7 +2,7 @@ from telebot import TeleBot
 from buttons import *
 import database as db
 from geopy import Photon
-bot = TeleBot(token="TOKEN")
+bot = TeleBot(token="7807814430:AAFjmwjx9BEWPyrMrotJABAIt1Dd5k8iOCI")
 # db.add_product("Чикенбургер", 30000.0, "вкусная курочка в булочке", 10, "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYO_gzNUj6uWpQZRLLTQSb_tGBrLZaUV-Uew&s")
 # db.add_product("Даблбургер", 50000.0, "две вкусные котлеты в булочке", 10, "https://d2j6dbq0eux0bg.cloudfront.net/images/14450072/1156014693.jpg")
 # db.add_product("Хот-дог", 20000.0, "сосиска в булочке", 0, "https://d2j6dbq0eux0bg.cloudfront.net/images/14450072/1156014693.jpg")
